@@ -18,6 +18,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Debug - List files
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "List all files recursively:"
+          ls -R
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
