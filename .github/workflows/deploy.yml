@@ -8,7 +8,7 @@ env:
   AWS_REGION: ap-southeast-2
   ECR_REPOSITORY: chanachai.forwork/pokemon-battle
   IMAGE_TAG: v${{ github.run_number }}
-  WORK_DIR: www/pokemon-battle-app
+  TARGET_DIR: "www/pokemon-battle-app"
 
 jobs:
   build-and-deploy:
@@ -17,13 +17,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Debug - List files
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "List all files recursively:"
-          ls -R
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -36,12 +29,15 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build, tag, and push image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        working-directory: ${{ env.WORK_DIR }} 
         run: |
-          echo "Building in directory: $PWD"
+          echo "Checking files in repository..."
+          ls -R
+          
+          echo "Moving to directory: $TARGET_DIR"
+          cd $TARGET_DIR || { echo "❌ หาโฟลเดอร์ $TARGET_DIR ไม่เจอ! กรุณาเช็คบน GitHub ว่ามีโฟลเดอร์นี้ไหม"; exit 1; }
           
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
@@ -52,9 +48,8 @@ jobs:
       - name: Deploy with Docker Compose
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        working-directory: ${{ env.WORK_DIR }}
         run: |
-          echo "Deploying in directory: $PWD"
+          cd $TARGET_DIR || { echo "❌ Directory not found"; exit 1; }
           
           docker compose pull
           docker compose up -d --remove-orphans
