@@ -353,7 +353,7 @@ export default function App() {
         <div className="max-w-4xl w-full bg-slate-800 rounded-xl shadow-2xl border-4 border-slate-700 overflow-hidden">
           <div className="bg-red-600 p-6 text-center border-b-4 border-red-800">
             <h1 className="text-4xl font-extrabold text-white tracking-wider uppercase drop-shadow-md">
-              Pokemon Battle V6
+              Pokemon Battle V7
             </h1>
             <p className="text-red-100 mt-2">เลือก Pokemon ของคุณ</p>
           </div>
