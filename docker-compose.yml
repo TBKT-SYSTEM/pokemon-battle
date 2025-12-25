@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  web:
+    image: 630977123045.dkr.ecr.ap-southeast-2.amazonaws.com/chanachai.forwork/pokemon-battle:latest
+
+    container_name: pokemon-battle
+
+    restart: always
+
+    ports:
+      - "8081:80"
+
+    platform: linux/amd64

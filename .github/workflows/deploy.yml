@@ -8,7 +8,6 @@ env:
   AWS_REGION: ap-southeast-2
   ECR_REPOSITORY: chanachai.forwork/pokemon-battle
   IMAGE_TAG: v${{ github.run_number }}
-  TARGET_DIR: "www/pokemon-battle-app"
 
 jobs:
   build-and-deploy:
@@ -33,12 +32,6 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          echo "Checking files in repository..."
-          ls -R
-          
-          echo "Moving to directory: $TARGET_DIR"
-          cd $TARGET_DIR || { echo "❌ หาโฟลเดอร์ $TARGET_DIR ไม่เจอ! กรุณาเช็คบน GitHub ว่ามีโฟลเดอร์นี้ไหม"; exit 1; }
-          
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
 
@@ -49,7 +42,6 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          cd $TARGET_DIR || { echo "❌ Directory not found"; exit 1; }
           
           docker compose pull
           docker compose up -d --remove-orphans
